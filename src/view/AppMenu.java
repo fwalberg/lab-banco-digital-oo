@@ -2,6 +2,7 @@ package view;
 
 import java.util.Scanner;
 
+import app.Main;
 import controller.ClienteController;
 
 public class AppMenu {
@@ -36,20 +37,21 @@ public class AppMenu {
 	private static void clientMenu() {
 		ClienteController controller = new ClienteController();
 		
-		System.out.println();
-		System.out.println("=== MENU CLIENTE ===");
-		System.out.println("[1] => Novo cadastro");
-		System.out.println("[2] => Clientes Cadastrados");
-		System.out.println("[3] => Excluir Cliente");
-		System.out.println("[4] => Retornar ao menu principal");
-		
 		Boolean returnMainMenu = false;
 		do {
+			System.out.println();
+			System.out.println("=== MENU CLIENTE ===");
+			System.out.println("[1] => Novo cadastro");
+			System.out.println("[2] => Clientes Cadastrados");
+			System.out.println("[3] => Excluir Cliente");
+			System.out.println("[4] => Retornar ao menu principal");
+			
 			System.out.print("Opcao: ");
 			Integer option = scanner.nextInt();
 		
 			switch (option) {
 				case 1 -> {
+					System.out.print("Informe o nome: ");
 					String nome = scanner.nextLine();
 					nome = scanner.nextLine();
 					controller.criarCliente(nome);
@@ -57,7 +59,15 @@ public class AppMenu {
 		
 				case 2 -> controller.listarClientes();
 
-				case 3 -> controller.removerCliente();
+				case 3 -> {
+					controller.listarClientes();
+					if (!Main.data.clientesCadastrados.isEmpty()) {
+						System.out.print("Informe a conta a ser removida: ");
+						String nome = scanner.nextLine();
+						nome = scanner.nextLine();
+						controller.removerCliente(nome);
+					}
+				}
 
 				case 4 -> returnMainMenu = true;
 

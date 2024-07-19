@@ -1,53 +1,56 @@
 package controller;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
+import app.Main;
 import model.Cliente;
 
 public class ClienteController {
-	List<Cliente> listaClientes;
-	
-	public ClienteController() {
-		this.listaClientes = new ArrayList<>();
-	}
+	private Cliente clienteEncontrado;
 	
 	public Cliente criarCliente(String nome) {
 		Cliente cliente = new Cliente(nome);
-		listaClientes.add(cliente);
-		System.out.println(listaClientes.get(listaClientes.size()-1) + " cadastrado(a)");
+		Main.data.clientesCadastrados.add(cliente);
+		System.out.println(Main.data.clientesCadastrados.get(Main.data.clientesCadastrados.size()-1) + " cadastrado(a)");
 		return cliente;
 	}
 	
-	public void listarClientes() {
-		if (this.listaClientes.isEmpty()) {
-			System.out.println("Nao existe clientes cadastrados");
+	public void listarClientes() {		
+		if (Main.data.clientesCadastrados.isEmpty()) {
+			System.out.println("Nenhum cliente cadastrado!");
 		} else {
-			for (Cliente cliente : this.listaClientes) {
-				System.out.println("Nome cliente: " + cliente.getNome());
+			System.out.println("====== LISTA DE CLIENTES CADASTRADOS ======");
+			Main.data.clientesCadastrados
+			.forEach(cliente -> System.out.println(cliente));
+		}
+	}
+	
+	public Boolean verificaSeExisteCliente(String nome) {
+		Iterator<Cliente> existeCliente = Main.data.clientesCadastrados.iterator();
+		Boolean hasClient = false;
+		
+		while(existeCliente.hasNext()) {
+			Cliente cliente = existeCliente.next();
+			
+			if(cliente.getNome().equalsIgnoreCase(nome)) {
+				this.clienteEncontrado = cliente;
+				hasClient = true;
 			}
 		}
 		
+		return hasClient;
 	}
 	
 	public void removerCliente(String nome) {
 		try {
-			if(this.listaClientes.isEmpty()) {
-				System.out.println("Nao existe cliente cadastrado");
+			Boolean hasClient = verificaSeExisteCliente(nome);
+			if (hasClient) {
+				Main.data.clientesCadastrados.remove(clienteEncontrado);
+				System.out.println(String.format("Clente %s removido.", this.clienteEncontrado.getNome()));
+				this.clienteEncontrado = null;
 			}
-			
-			Iterator<Cliente> existeCliente = this.listaClientes.iterator();
-			
-			Cliente cliente = null;
-			while(existeCliente.hasNext()) {
-				cliente = existeCliente.next();
-				
-				if(cliente.getNome().equalsIgnoreCase(nome)) {
-					existeCliente.remove();
-				} else {
-					System.out.println("Cliente nao encontrado");
-				}
+			else {
+				System.out.println("Cliente nao encontrado!");
 			}
 			
 		} catch (Exception e) {
